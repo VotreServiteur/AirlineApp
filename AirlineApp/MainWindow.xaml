@@ -4,9 +4,81 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AirlineApp"
+        xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
+        
+        xmlns:airline="clr-namespace:Airline;assembly=PlanesClasses"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
+        Title="MainWindow" MaxWidth="1280" MaxHeight="720" MinWidth="800" MinHeight="600">
+    <Window.Resources>
+        <Style x:Key="Buttons">
+            <Setter Property="Control.MaxWidth" Value="300"/>
+            <Setter Property="Control.MaxHeight" Value="40"/>
+            <Setter Property="Control.MinHeight" Value="23"/>
+            <Setter Property="Control.Margin" Value="1"/>
+        </Style>
+    </Window.Resources>
+    <Grid x:Name="MainGrid" Background="#E3E3E3">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="100"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="20"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="20"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="10"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <GroupBox Grid.Row="1" Grid.RowSpan="3" Grid.Column="1">
+            <GroupBox.Header>
+                <TextBlock FontSize="20">All planes</TextBlock>
+            </GroupBox.Header>
+            
+            
+            <TreeView  x:Name="PlaneTree">
+                <TreeView.Resources>
+                    <DataTemplate x:Key="PTempl" DataType="{x:Type airline:Plane}">
+                        <TextBlock Text="{Binding Path=Name}"/>
+                    </DataTemplate>
+                </TreeView.Resources>
+                <TreeViewItem Header="Passenger" x:Name="Passenger" ItemTemplate="{DynamicResource PTempl}"/>
+                <TreeViewItem Header="Cargo" x:Name="Cargo" ItemTemplate="{DynamicResource PTempl}"/>
+            </TreeView>
+            
+            
+        </GroupBox>
+        <GroupBox Grid.Row="1" Grid.RowSpan="3" Grid.Column="3">
+            <GroupBox.Header>
+                <TextBlock FontSize="20">Current race</TextBlock>
+            </GroupBox.Header>
+            <DataGrid  x:Name="CurrentRace" AutoGenerateColumns="True" ItemsSource="{DynamicResource ResourceKey=Planes}">
+            <DataGrid.Resources>
+                <col:ArrayList x:Key="Planes">
+                    </col:ArrayList>
+                </DataGrid.Resources>
+            </DataGrid>
+        </GroupBox>
+        <Grid Grid.Column="5" Grid.Row="1" RowSpan="2" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.1*"/>
+                <RowDefinition/>
+                <RowDefinition Height="0.1*"/>
+            </Grid.RowDefinitions>
+            <GroupBox Grid.Row="1">
+                
+            </GroupBox>
+        </Grid>
+        <StackPanel Grid.Row="3" Grid.Column="5" >
+            <Button  Style="{StaticResource Buttons}"></Button>
+            <Button  Style="{StaticResource Buttons}"></Button>
+            <Button  Style="{StaticResource Buttons}"></Button>
+            <Button  Style="{StaticResource Buttons}"></Button>
+        </StackPanel>
     </Grid>
 </Window>

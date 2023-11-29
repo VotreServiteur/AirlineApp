@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Xml;
+using Airline;
+
 
 namespace AirlineApp
 {
@@ -20,9 +16,35 @@ namespace AirlineApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static XmlDocument xDoc = new XmlDocument();
+        public static List<Plane> Planes = new();
         public MainWindow()
         {
             InitializeComponent();
+            ReadXml();
+        }
+        public void ReadXml()
+        {
+            xDoc.Load(@"G:\Code\C#\AirlineApp\PlanesClasses\airline.xml");
+            XmlElement? xRoot = xDoc.DocumentElement;
+            if (xRoot != null)
+            {
+                foreach (XmlElement xNode in xRoot)
+                {
+                    Plane plane;
+                    if (xNode.Attributes.GetNamedItem("type")!.Value!.Equals("P"))
+                    {
+                        plane = new PassengerPlane(xNode);
+                        Passenger.Items.Add(plane);
+                    }
+                    else
+                    {
+                        plane = new CargoPlane(xNode);
+                        Cargo.Items.Add(plane);
+                    }
+                    Planes.Add(plane);
+                }
+            }
         }
     }
 }
