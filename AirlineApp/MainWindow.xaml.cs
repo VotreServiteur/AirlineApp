@@ -25,7 +25,7 @@ namespace AirlineApp
         }
         public void ReadXml()
         {
-            xDoc.Load(@"C:\Users\makst\RiderProjects\AirlineApp\PlanesClasses\airline.xml");
+            xDoc.Load(@"C:\Users\makst\Source\Repos\VotreServiteur\AirlineApp\PlanesClasses\airline.xml");
             XmlElement? xRoot = xDoc.DocumentElement;
             if (xRoot != null)
             {
