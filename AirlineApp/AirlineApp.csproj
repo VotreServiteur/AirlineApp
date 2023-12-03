@@ -11,4 +11,16 @@
       <ProjectReference Include="..\PlanesClasses\PlanesClasses.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="UserControls\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Page Update="CreatingAbstractPlane.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+    </ItemGroup>
+
 </Project>

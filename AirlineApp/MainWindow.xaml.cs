@@ -25,7 +25,7 @@ namespace AirlineApp
         }
         public void ReadXml()
         {
-            xDoc.Load(@"G:\Code\C#\AirlineApp\PlanesClasses\airline.xml");
+            xDoc.Load(@"C:\Users\makst\RiderProjects\AirlineApp\PlanesClasses\airline.xml");
             XmlElement? xRoot = xDoc.DocumentElement;
             if (xRoot != null)
             {
@@ -45,6 +45,12 @@ namespace AirlineApp
                     Planes.Add(plane);
                 }
             }
+        }
+
+        private void AddPlane(object sender, RoutedEventArgs e)
+        {
+            Window choose = new TypeChoosing();
+            choose.ShowDialog();
         }
     }
 }
