@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Xml;
 using Airline;
 
@@ -18,6 +19,7 @@ namespace AirlineApp
     {
         public static XmlDocument xDoc = new XmlDocument();
         public static List<Plane> Planes = new();
+        public static bool IsPassenger;
         public MainWindow()
         {
             InitializeComponent();
@@ -49,7 +51,8 @@ namespace AirlineApp
 
         private void AddPlane(object sender, RoutedEventArgs e)
         {
-            Window choose = new TypeChoosing();
+            IsPassenger = (sender as Button).Name.Equals(CreatePassengerPlane.Name);
+            Window choose = new CreatingPlane(IsPassenger);
             choose.ShowDialog();
         }
     }

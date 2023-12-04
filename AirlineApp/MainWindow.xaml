@@ -16,6 +16,7 @@
             <Setter Property="Control.MinHeight" Value="23"/>
             <Setter Property="Control.Margin" Value="1"/>
         </Style>
+
         <Style x:Key="ExpanderHeaderFocusVisual">
             <Setter Property="Control.Template">
                 <Setter.Value>
@@ -147,8 +148,8 @@
                             <RowDefinition/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <Button Margin="4 0" Style="{StaticResource Buttons}"  Content="Passenger" x:Name="CreatePassengerPlane"/>
-                        <Button Grid.Row="1" Margin="4 0" Style="{StaticResource Buttons}" Content="Cargo" x:Name="CreateCargoPlane"/>
+                        <Button Margin="4 0"  Content="Passenger" x:Name="CreatePassengerPlane" Click="AddPlane"/>
+                        <Button Grid.Row="1" Margin="4 0" Content="Cargo" x:Name="CreateCargoPlane" Click="AddPlane"/>
                     </Grid>
                 </Grid>
             </Expander>
