@@ -16,7 +16,6 @@
             <Setter Property="Control.MinHeight" Value="23"/>
             <Setter Property="Control.Margin" Value="1"/>
         </Style>
-
         <Style x:Key="ExpanderHeaderFocusVisual">
             <Setter Property="Control.Template">
                 <Setter.Value>
@@ -96,14 +95,12 @@
             <TreeView  x:Name="PlaneTree">
                 <TreeView.Resources>
                     <DataTemplate x:Key="PTempl" DataType="{x:Type airline:Plane}">
-                        <TextBlock Text="{Binding Path=Name}"/>
+                        <TextBlock Text="{Binding Path=Name}" FontSize="15"/>
                     </DataTemplate>
                 </TreeView.Resources>
-                <TreeViewItem Header="Passenger" x:Name="Passenger" ItemTemplate="{DynamicResource PTempl}"/>
-                <TreeViewItem Header="Cargo" x:Name="Cargo" ItemTemplate="{DynamicResource PTempl}"/>
+                <TreeViewItem Header="Passenger" x:Name="Passenger" ItemTemplate="{DynamicResource PTempl}" Focusable="False" FontSize="15"/>
+                <TreeViewItem Header="Cargo" x:Name="Cargo" ItemTemplate="{DynamicResource PTempl}" Focusable="False" FontSize="15"/>
             </TreeView>
-
-
         </GroupBox>
         <GroupBox Grid.Row="1" Grid.RowSpan="3" Grid.Column="3">
             <GroupBox.Header>
@@ -123,6 +120,7 @@
                 <RowDefinition Height="0.1*"/>
             </Grid.RowDefinitions>
             <GroupBox Grid.Row="1">
+                <TextBlock Text="{Binding ElementName=PlaneTree, Path=SelectedItem}"></TextBlock>
             </GroupBox>
         </Grid>
         <StackPanel Grid.Row="3" Grid.Column="5" >
@@ -136,9 +134,9 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.3*"/>
+                        <ColumnDefinition Width="0.15*"/>
                         <ColumnDefinition/>
-                        <ColumnDefinition Width="0.3*"/>
+                        <ColumnDefinition Width="0.15*"/>
                     </Grid.ColumnDefinitions>
                     <Grid RowSpan="2" Column="1" Margin="0 -3">
                         <Grid.Background>
@@ -154,9 +152,8 @@
                 </Grid>
             </Expander>
             <Button x:Name="TempName"  Style="{StaticResource Buttons}"></Button>
-            <Button  Style="{StaticResource Buttons}"></Button>
-            <Button  Style="{StaticResource Buttons}"></Button>
+            <Button  Style="{StaticResource Buttons}" Content="Save data" Click="SavingXml"/>
+            <Button  Style="{StaticResource Buttons}" Content="Exit" Click="Exit"/>
         </StackPanel>
-
     </Grid>
 </Window>
