@@ -12,9 +12,10 @@ public partial class CreatingPlane : Window
 
     public CreatingPlane(bool isPassenger)
     {
-        IsPassenger = isPassenger;
-        Console.WriteLine(IsPassenger);
         InitializeComponent();
+        
+        IsPassenger = isPassenger;
+        DataContext = this;
     }
     protected void OnPropertyChanged(string property)
     {

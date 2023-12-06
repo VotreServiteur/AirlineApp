@@ -19,7 +19,8 @@ namespace AirlineApp
     {
         public static XmlDocument xDoc = new XmlDocument();
         public static List<Plane> Planes = new();
-        public static bool IsPassenger;
+        public static bool IsPassenger { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -27,7 +28,7 @@ namespace AirlineApp
         }
         public void ReadXml()
         {
-            xDoc.Load(@"C:\Users\makst\Source\Repos\VotreServiteur\AirlineApp\PlanesClasses\airline.xml");
+            xDoc.Load(@"C:\Users\makst\RiderProjects\AirlineApp\PlanesClasses\airline.xml");
             XmlElement? xRoot = xDoc.DocumentElement;
             if (xRoot != null)
             {
