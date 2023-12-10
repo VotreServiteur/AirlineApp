@@ -5,12 +5,12 @@ namespace AirlineApp;
 
 public partial class SavingData : Window
 {
-    public bool IsForSave { get; set; }
-
     public SavingData()
     {
         InitializeComponent();
     }
+
+    public bool IsForSave { get; set; }
 
     private void SaveData(object sender, RoutedEventArgs e)
     {

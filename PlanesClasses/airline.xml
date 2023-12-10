@@ -10,7 +10,7 @@
     <amountOfPassengers>135</amountOfPassengers>
   </plane>
   <plane type="C">
-    <name>Pnae </name>
+    <name>Pnae</name>
     <capacity>215</capacity>
     <loadCapacity>513</loadCapacity>
     <crew>513</crew>

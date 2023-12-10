@@ -4,12 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AirlineApp"
-        xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
-        xmlns:airline="clr-namespace:Airline;assembly=PlanesClasses"
         xmlns:dd="urn:gong-wpf-dragdrop"
-        xmlns:planes="clr-namespace:Planes;assembly=PlanesClasses"
         mc:Ignorable="d"
-        Title="MainWindow" MaxWidth="1280" MaxHeight="720" MinWidth="800" MinHeight="600" Height="720" Width="1280">
+        Title="MainWindow" MaxWidth="1280" MaxHeight="720" MinWidth="800" MinHeight="600" Height="720" Width="1280"
+        d:DataContext="{d:DesignInstance local:MainWindow}">
     <Window.Resources>
         <Style x:Key="Buttons">
             <Setter Property="Control.MaxWidth" Value="300" />
@@ -93,30 +91,25 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <ContextMenu x:Key="TreeCM">
-            <MenuItem Header="Remove" 
-                      Command="{Binding RemoveItem}"
-                      CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu},
-                      Path=PlacementTarget.SelectedItem}"/>
-            <MenuItem Header="Transfer"/>
-        </ContextMenu>
+
+
     </Window.Resources>
     <Grid x:Name="MainGrid" Background="#e8fafb">
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition Height="100"></RowDefinition>
+            <RowDefinition Height="50" />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height="100" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.1*"></ColumnDefinition>
-            <ColumnDefinition Width="0.5*"></ColumnDefinition>
-            <ColumnDefinition Width="0.02*"></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition Width="0.02*"></ColumnDefinition>
-            <ColumnDefinition Width="0.6*"></ColumnDefinition>
-            <ColumnDefinition Width="10"></ColumnDefinition>
+            <ColumnDefinition Width="0.1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="0.02*" />
+            <ColumnDefinition />
+            <ColumnDefinition Width="0.02*" />
+            <ColumnDefinition Width="0.6*" />
+            <ColumnDefinition Width="10" />
         </Grid.ColumnDefinitions>
 
 
@@ -124,20 +117,45 @@
             <GroupBox.Header>
                 <TextBlock FontSize="20">All planes</TextBlock>
             </GroupBox.Header>
-            <TreeView x:Name="PlaneTree"
-                      dd:DragDrop.IsDragSource="True"
-                      dd:DragDrop.IsDropTarget="True">
-                <TreeView.Resources>
-                    <DataTemplate x:Key="PTempl" DataType="{x:Type planes:Plane}">
-                        <TextBlock Text="{Binding Path=Name}" FontSize="15" ContextMenu="{StaticResource TreeCM}"/>
-                    </DataTemplate>
-                </TreeView.Resources>
-                
-                <TreeViewItem Header="Passenger" x:Name="Passenger" ItemTemplate="{DynamicResource PTempl}"
-                              Focusable="False" FontSize="15"/>
-                <TreeViewItem Header="Cargo" x:Name="Cargo" ItemTemplate="{DynamicResource PTempl}" Focusable="False"
-                              FontSize="15" />
-            </TreeView>
+            <StackPanel x:Name="AllPlanes" Orientation="Horizontal">
+                <GroupBox>
+                    <ListView ItemsSource="{Binding Path=(local:MainWindow.Passenger)}" x:Name="PassengerPlanes">
+
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader Tag="Name" Click="PassengerPlanesColumnHeader_Click">Name</GridViewColumnHeader>
+                                    </GridViewColumn.Header>
+                                </GridViewColumn>
+                                <GridViewColumn DisplayMemberBinding="{Binding Path=FuelRate}">
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader Tag="FuelRate" Click="PassengerPlanesColumnHeader_Click">Fuel rate</GridViewColumnHeader>
+                                    </GridViewColumn.Header>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </GroupBox>
+                <GroupBox Grid.Column="1">
+                    <ListView ItemsSource="{Binding Path=(local:MainWindow.Cargo)}" x:Name="CargoPlanes">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader Tag="Name" Click="PassengerPlanesColumnHeader_Click">Name</GridViewColumnHeader>
+                                    </GridViewColumn.Header>
+                                </GridViewColumn>
+                                <GridViewColumn DisplayMemberBinding="{Binding Path=FuelRate}">
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader Tag="FuelRate" Click="PassengerPlanesColumnHeader_Click">Fuel rate</GridViewColumnHeader>
+                                    </GridViewColumn.Header>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </GroupBox>
+            </StackPanel>
         </GroupBox>
 
 
@@ -159,7 +177,7 @@
                             </GridViewColumn>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=Capacity}">
                                 <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="Capacity" Click="PassengerPlanesColumnHeader_Click">\nCapacity</GridViewColumnHeader>
+                                    <GridViewColumnHeader Tag="Capacity" Click="PassengerPlanesColumnHeader_Click"> Capacity</GridViewColumnHeader>
                                 </GridViewColumn.Header>
                             </GridViewColumn>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=LoadCapacity}">
@@ -184,13 +202,17 @@
                             </GridViewColumn>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=AmountOfPassengers}">
                                 <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="AmountOfPassenger" Click="PassengerPlanesColumnHeader_Click">Amount of passenger</GridViewColumnHeader>
+                                    <GridViewColumnHeader Tag="AmountOfPassenger"
+                                                          Click="PassengerPlanesColumnHeader_Click">
+                                        Amount of passenger
+                                    </GridViewColumnHeader>
                                 </GridViewColumn.Header>
                             </GridViewColumn>
                         </GridView>
                     </ListView.View>
                 </ListView>
-                <TextBlock>Cargo</TextBlock><ListView MinHeight="100" Name="CurCargoPlanes"
+                <TextBlock>Cargo</TextBlock>
+                <ListView MinHeight="100" Name="CurCargoPlanes"
                           dd:DragDrop.IsDragSource="True"
                           dd:DragDrop.IsDropTarget="True">
                     <ListView.View>
@@ -244,7 +266,51 @@
                 <RowDefinition Height="0.1*" />
             </Grid.RowDefinitions>
             <GroupBox Grid.Row="1">
-                <TextBlock Text="{Binding ElementName=PlaneTree, Path=SelectedItem}"></TextBlock>
+                <Grid>
+                    <TextBlock Text="{Binding ElementName=PassengerPlanes, Path=SelectedItem}"
+                               x:Name="PasInfo">
+                        <TextBlock.Style>
+                            <Style>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=PassengerPlanes, Path=IsMouseOver}"
+                                                 Value="true">
+                                        <Setter Property="UIElement.Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=CargoPlanes, Path=IsMouseOver}"
+                                                 Value="true">
+                                        <Setter Property="UIElement.Visibility" Value="Hidden" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=CargoInfo, Path=Visibility}"
+                                                 Value="Visible">
+                                        <Setter Property="UIElement.Visibility" Value="Hidden" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock Text="{Binding ElementName=CargoPlanes, Path=SelectedItem}"
+                               x:Name="CargoInfo">
+                        <TextBlock.Style>
+                            <Style>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=PassengerPlanes, Path=IsMouseOver}"
+                                                 Value="true">
+                                        <Setter Property="UIElement.Visibility" Value="Hidden" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=CargoPlanes, Path=IsMouseOver}"
+                                                 Value="true">
+                                        <Setter Property="UIElement.Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=PasInfo, Path=Visibility}"
+                                                 Value="Visible">
+                                        <Setter Property="UIElement.Visibility" Value="Hidden" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Grid>
+
             </GroupBox>
         </Grid>
         <StackPanel Grid.Row="3" Grid.Column="5">
@@ -276,7 +342,7 @@
                     </Grid>
                 </Grid>
             </Expander>
-            <Button x:Name="TempName" Style="{StaticResource Buttons}"></Button>
+            <Button x:Name="TempName" Style="{StaticResource Buttons}" />
             <Button Style="{StaticResource Buttons}" Content="Save data" Click="SavingXml" />
             <Button Style="{StaticResource Buttons}" Content="Exit" Click="Exit" />
         </StackPanel>

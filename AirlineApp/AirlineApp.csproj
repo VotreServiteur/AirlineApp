@@ -8,19 +8,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PlanesClasses\PlanesClasses.csproj" />
+        <ProjectReference Include="..\PlanesClasses\PlanesClasses.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Page Update="CreatingAbstractPlane.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <XamlRuntime>Wpf</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
+        <Page Update="CreatingAbstractPlane.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <XamlRuntime>Wpf</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="gong-wpf-dragdrop" Version="3.2.1" />
+        <PackageReference Include="gong-wpf-dragdrop" Version="3.2.1"/>
     </ItemGroup>
 
 </Project>
