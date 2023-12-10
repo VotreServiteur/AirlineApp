@@ -1,7 +1,7 @@
 ﻿using System.Xml;
 using System.Xml.Linq;
 
-namespace Airline;
+namespace Planes;
 using static System.Convert;
 
 public abstract class Plane

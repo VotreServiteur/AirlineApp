@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using System.Xml.Linq;
+using Planes;
 
 namespace Airline;
 public class PassengerPlane:Plane

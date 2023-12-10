@@ -5,23 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AirlineApp"
         xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
-                
         xmlns:airline="clr-namespace:Airline;assembly=PlanesClasses"
+        xmlns:dd="urn:gong-wpf-dragdrop"
+        xmlns:planes="clr-namespace:Planes;assembly=PlanesClasses"
         mc:Ignorable="d"
         Title="MainWindow" MaxWidth="1280" MaxHeight="720" MinWidth="800" MinHeight="600" Height="720" Width="1280">
     <Window.Resources>
         <Style x:Key="Buttons">
-            <Setter Property="Control.MaxWidth" Value="300"/>
-            <Setter Property="Control.MaxHeight" Value="40"/>
-            <Setter Property="Control.MinHeight" Value="23"/>
-            <Setter Property="Control.Margin" Value="1"/>
+            <Setter Property="Control.MaxWidth" Value="300" />
+            <Setter Property="Control.MaxHeight" Value="40" />
+            <Setter Property="Control.MinHeight" Value="23" />
+            <Setter Property="Control.Margin" Value="1" />
         </Style>
         <Style x:Key="ExpanderHeaderFocusVisual">
             <Setter Property="Control.Template">
                 <Setter.Value>
                     <ControlTemplate>
                         <Border>
-                            <Rectangle Margin="0" StrokeDashArray="1 2" Stroke="Black" SnapsToDevicePixels="true" StrokeThickness="1"/>
+                            <Rectangle Margin="0" StrokeDashArray="1 2" Stroke="Black" SnapsToDevicePixels="true"
+                                       StrokeThickness="1" />
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -33,8 +35,8 @@
                     <ControlTemplate TargetType="{x:Type ToggleButton}">
                         <Border Padding="{TemplateBinding Padding}">
                             <Grid Background="Transparent" SnapsToDevicePixels="False">
-
-                                <ContentPresenter Margin="0,0,0,0" RecognizesAccessKey="True" SnapsToDevicePixels="True" VerticalAlignment="Center"/>
+                                <ContentPresenter Margin="0,0,0,0" RecognizesAccessKey="True"
+                                                  SnapsToDevicePixels="True" VerticalAlignment="Center" />
                             </Grid>
                         </Border>
 
@@ -43,35 +45,63 @@
             </Setter>
         </Style>
         <Style x:Key="ExpanderStyle1" TargetType="{x:Type Expander}">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Expander}">
-                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3" SnapsToDevicePixels="true">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3"
+                                SnapsToDevicePixels="true">
                             <DockPanel>
-                                <ToggleButton x:Name="HeaderSite" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}" DockPanel.Dock="Top" FontStretch="{TemplateBinding FontStretch}" Foreground="{TemplateBinding Foreground}" FocusVisualStyle="{StaticResource ExpanderHeaderFocusVisual}" FontStyle="{TemplateBinding FontStyle}" FontFamily="{TemplateBinding FontFamily}" FontWeight="{TemplateBinding FontWeight}" FontSize="{TemplateBinding FontSize}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}" Margin="1" MinWidth="0" MinHeight="0" Padding="{TemplateBinding Padding}" Style="{StaticResource ExpanderDownHeaderStyle}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                <ContentPresenter x:Name="ExpandSite" DockPanel.Dock="Bottom" Focusable="false" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Visibility="Collapsed"/>
+                                <ToggleButton x:Name="HeaderSite" ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                              Content="{TemplateBinding Header}"
+                                              ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}"
+                                              DockPanel.Dock="Top" FontStretch="{TemplateBinding FontStretch}"
+                                              Foreground="{TemplateBinding Foreground}"
+                                              FocusVisualStyle="{StaticResource ExpanderHeaderFocusVisual}"
+                                              FontStyle="{TemplateBinding FontStyle}"
+                                              FontFamily="{TemplateBinding FontFamily}"
+                                              FontWeight="{TemplateBinding FontWeight}"
+                                              FontSize="{TemplateBinding FontSize}"
+                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                              Margin="1" MinWidth="0" MinHeight="0" Padding="{TemplateBinding Padding}"
+                                              Style="{StaticResource ExpanderDownHeaderStyle}"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                <ContentPresenter x:Name="ExpandSite" DockPanel.Dock="Bottom" Focusable="false"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  Margin="{TemplateBinding Padding}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  Visibility="Collapsed" />
                             </DockPanel>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="true">
-                                <Setter Property="Visibility" TargetName="ExpandSite" Value="Visible"/>
+                                <Setter Property="Visibility" TargetName="ExpandSite" Value="Visible" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+        <ContextMenu x:Key="TreeCM">
+            <MenuItem Header="Remove" 
+                      Command="{Binding RemoveItem}"
+                      CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu},
+                      Path=PlacementTarget.SelectedItem}"/>
+            <MenuItem Header="Transfer"/>
+        </ContextMenu>
     </Window.Resources>
-    <Grid x:Name="MainGrid" Background="#FFDEDEDE">
+    <Grid x:Name="MainGrid" Background="#e8fafb">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"></RowDefinition>
             <RowDefinition></RowDefinition>
@@ -80,80 +110,175 @@
             <RowDefinition Height="100"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100"></ColumnDefinition>
+            <ColumnDefinition Width="0.1*"></ColumnDefinition>
+            <ColumnDefinition Width="0.5*"></ColumnDefinition>
+            <ColumnDefinition Width="0.02*"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition Width="20"></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition Width="20"></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="0.02*"></ColumnDefinition>
+            <ColumnDefinition Width="0.6*"></ColumnDefinition>
             <ColumnDefinition Width="10"></ColumnDefinition>
         </Grid.ColumnDefinitions>
+
+
         <GroupBox Grid.Row="1" Grid.RowSpan="3" Grid.Column="1">
             <GroupBox.Header>
                 <TextBlock FontSize="20">All planes</TextBlock>
             </GroupBox.Header>
-            <TreeView  x:Name="PlaneTree">
+            <TreeView x:Name="PlaneTree"
+                      dd:DragDrop.IsDragSource="True"
+                      dd:DragDrop.IsDropTarget="True">
                 <TreeView.Resources>
-                    <DataTemplate x:Key="PTempl" DataType="{x:Type airline:Plane}">
-                        <TextBlock Text="{Binding Path=Name}" FontSize="15"/>
+                    <DataTemplate x:Key="PTempl" DataType="{x:Type planes:Plane}">
+                        <TextBlock Text="{Binding Path=Name}" FontSize="15" ContextMenu="{StaticResource TreeCM}"/>
                     </DataTemplate>
                 </TreeView.Resources>
-                <TreeViewItem Header="Passenger" x:Name="Passenger" ItemTemplate="{DynamicResource PTempl}" Focusable="False" FontSize="15"/>
-                <TreeViewItem Header="Cargo" x:Name="Cargo" ItemTemplate="{DynamicResource PTempl}" Focusable="False" FontSize="15"/>
+                
+                <TreeViewItem Header="Passenger" x:Name="Passenger" ItemTemplate="{DynamicResource PTempl}"
+                              Focusable="False" FontSize="15"/>
+                <TreeViewItem Header="Cargo" x:Name="Cargo" ItemTemplate="{DynamicResource PTempl}" Focusable="False"
+                              FontSize="15" />
             </TreeView>
         </GroupBox>
+
+
         <GroupBox Grid.Row="1" Grid.RowSpan="3" Grid.Column="3">
             <GroupBox.Header>
                 <TextBlock FontSize="20">Current race</TextBlock>
             </GroupBox.Header>
-            <DataGrid  x:Name="CurrentRace" AutoGenerateColumns="True" ItemsSource="{DynamicResource ResourceKey=Planes}">
-                <DataGrid.Resources>
-                    <col:ArrayList x:Key="Planes">
-                    </col:ArrayList>
-                </DataGrid.Resources>
-            </DataGrid>
+            <StackPanel>
+                <TextBlock>Passenger</TextBlock>
+                <ListView MinHeight="100" Name="CurPasPlanes"
+                          dd:DragDrop.IsDragSource="True"
+                          dd:DragDrop.IsDropTarget="True">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="Name" Click="PassengerPlanesColumnHeader_Click">Name</GridViewColumnHeader>
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Capacity}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="Capacity" Click="PassengerPlanesColumnHeader_Click">\nCapacity</GridViewColumnHeader>
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=LoadCapacity}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="LoadCapacity" Click="PassengerPlanesColumnHeader_Click">Load Capacity</GridViewColumnHeader>
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Crew}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="Crew" Click="PassengerPlanesColumnHeader_Click">Crew</GridViewColumnHeader>
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=FuelRate}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="FuelRate" Click="PassengerPlanesColumnHeader_Click">Fuel Rate</GridViewColumnHeader>
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=FlightRange}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="FlightRange" Click="PassengerPlanesColumnHeader_Click">Flight Range</GridViewColumnHeader>
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=AmountOfPassengers}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="AmountOfPassenger" Click="PassengerPlanesColumnHeader_Click">Amount of passenger</GridViewColumnHeader>
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <TextBlock>Cargo</TextBlock><ListView MinHeight="100" Name="CurCargoPlanes"
+                          dd:DragDrop.IsDragSource="True"
+                          dd:DragDrop.IsDropTarget="True">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="Name" Click="CargoPlanesColumnHeader_Click">Name</GridViewColumnHeader>
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Capacity}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="Capacity" Click="PassengerPlanesColumnHeader_Click">Capacity</GridViewColumnHeader>
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=LoadCapacity}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="LoadCapacity" Click="PassengerPlanesColumnHeader_Click">Load Capacity</GridViewColumnHeader>
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Crew}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="Crew" Click="PassengerPlanesColumnHeader_Click">Crew</GridViewColumnHeader>
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=FuelRate}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="FuelRate" Click="PassengerPlanesColumnHeader_Click">Fuel Rate</GridViewColumnHeader>
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=FlightRange}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="FlightRange" Click="PassengerPlanesColumnHeader_Click">Flight Range</GridViewColumnHeader>
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=LoadPrice}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="LoadPrice" Click="PassengerPlanesColumnHeader_Click">Load price</GridViewColumnHeader>
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
         </GroupBox>
-        <Grid Grid.Column="5" Grid.Row="1" RowSpan="2" >
+
+
+        <Grid Grid.Column="5" Grid.Row="1" RowSpan="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="0.1*"/>
-                <RowDefinition/>
-                <RowDefinition Height="0.1*"/>
+                <RowDefinition Height="0.1*" />
+                <RowDefinition />
+                <RowDefinition Height="0.1*" />
             </Grid.RowDefinitions>
             <GroupBox Grid.Row="1">
                 <TextBlock Text="{Binding ElementName=PlaneTree, Path=SelectedItem}"></TextBlock>
             </GroupBox>
         </Grid>
-        <StackPanel Grid.Row="3" Grid.Column="5" >
-            <Expander Style="{DynamicResource ExpanderStyle1}" >
+        <StackPanel Grid.Row="3" Grid.Column="5">
+            <Expander Style="{DynamicResource ExpanderStyle1}">
                 <Expander.Header>
-                    <Button x:Name="Create" Content="Create plane" Style="{StaticResource Buttons}" Width="{Binding ActualWidth, ElementName=TempName, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <Button x:Name="Create" Content="Create plane" Style="{StaticResource Buttons}"
+                            Width="{Binding ActualWidth, ElementName=TempName, Mode=OneWay}" IsHitTestVisible="False" />
                 </Expander.Header>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.15*"/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="0.15*"/>
+                        <ColumnDefinition Width="0.15*" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="0.15*" />
                     </Grid.ColumnDefinitions>
                     <Grid RowSpan="2" Column="1" Margin="0 -3">
                         <Grid.Background>
-                            <SolidColorBrush Color="#FF211212" Opacity="0.4"/>
+                            <SolidColorBrush Color="#FF211212" Opacity="0.4" />
                         </Grid.Background>
                         <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
+                            <RowDefinition />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
-                        <Button Margin="4 0"  Content="Passenger" x:Name="CreatePassengerPlane" Click="AddPlane"/>
-                        <Button Grid.Row="1" Margin="4 0" Content="Cargo" x:Name="CreateCargoPlane" Click="AddPlane"/>
+                        <Button Margin="4 0" Content="Passenger" x:Name="CreatePassengerPlane" Click="AddPlane" />
+                        <Button Grid.Row="1" Margin="4 0" Content="Cargo" x:Name="CreateCargoPlane" Click="AddPlane" />
                     </Grid>
                 </Grid>
             </Expander>
-            <Button x:Name="TempName"  Style="{StaticResource Buttons}"></Button>
-            <Button  Style="{StaticResource Buttons}" Content="Save data" Click="SavingXml"/>
-            <Button  Style="{StaticResource Buttons}" Content="Exit" Click="Exit"/>
+            <Button x:Name="TempName" Style="{StaticResource Buttons}"></Button>
+            <Button Style="{StaticResource Buttons}" Content="Save data" Click="SavingXml" />
+            <Button Style="{StaticResource Buttons}" Content="Exit" Click="Exit" />
         </StackPanel>
     </Grid>
 </Window>

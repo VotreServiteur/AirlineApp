@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using GongSolutions.Wpf.DragDrop;
 
 namespace AirlineApp
 {
@@ -13,5 +14,18 @@ namespace AirlineApp
     /// </summary>
     public partial class App : Application
     {
+    }
+
+    public class AppDragDrop : IDropTarget
+    {
+        public void DragOver(IDropInfo dropInfo)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Drop(IDropInfo dropInfo)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

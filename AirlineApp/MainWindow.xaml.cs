@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Xml;
 using System.Xml.Linq;
 using Airline;
+using Planes;
 
 
 namespace AirlineApp
@@ -19,8 +19,13 @@ namespace AirlineApp
     {
         public static XmlDocument xDoc = new XmlDocument();
         public static ObservableCollection<Plane> Planes = new();
-        public static bool IsPassenger { get; set; }
 
+        private GridViewColumnHeader listViewSortCol = null;
+        private SortAdorner listViewSortAdorner = null;
+        
+        public static bool IsPassenger { get; set; }
+        
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -40,6 +45,7 @@ namespace AirlineApp
                     {
                         plane = new PassengerPlane(xNode);
                         Passenger.Items.Add(plane);
+                        //CurPasPlanes.Items.Add(plane);
                     }
                     else
                     {
@@ -47,7 +53,9 @@ namespace AirlineApp
                         Cargo.Items.Add(plane);
                     }
                     Planes.Add(plane);
+
                 }
+
             }
         }
 
@@ -92,5 +100,88 @@ namespace AirlineApp
                 this.Close();
             }
         }
+
+        private void Plane_OnDragEnter(object sender, DragEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Plane_OnMouseMove(object sender, MouseEventArgs e)
+        {
+            Plane plane = sender as Plane;
+            if (plane != null && e.LeftButton == MouseButtonState.Pressed)
+            {
+                DragDrop.DoDragDrop( (DependencyObject)e.Source,
+                    plane,
+                    DragDropEffects.Copy);
+            }
+        }
+
+        private void Plane_OnGiveFeedback(object sender, GiveFeedbackEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Plane_OnDragLeave(object sender, DragEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Plane_OnDragOver(object sender, DragEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Plane_OnDrop(object sender, DragEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PassengerPlanesColumnHeader_Click(object sender, RoutedEventArgs e)
+        {
+            PlanesColumnHeader_Click(sender, e, CurPasPlanes);
+        }
+        private void CargoPlanesColumnHeader_Click(object sender, RoutedEventArgs e)
+        {
+            PlanesColumnHeader_Click(sender, e, CurCargoPlanes);
+        }
+        private void PlanesColumnHeader_Click(object sender, RoutedEventArgs e, ListView lvUsers)
+        {
+            GridViewColumnHeader column = (sender as GridViewColumnHeader);
+            
+            string sortBy = column.Tag.ToString();
+            if(listViewSortCol != null)
+            {
+                AdornerLayer.GetAdornerLayer(listViewSortCol)?.Remove(listViewSortAdorner);
+                lvUsers.Items.SortDescriptions.Clear();
+            }
+
+            ListSortDirection newDir = ListSortDirection.Ascending;
+            if(listViewSortCol == column && listViewSortAdorner.Direction == newDir)
+                newDir = ListSortDirection.Descending;
+
+            listViewSortCol = column;
+            listViewSortAdorner = new SortAdorner(listViewSortCol, newDir);
+            AdornerLayer.GetAdornerLayer(listViewSortCol).Add(listViewSortAdorner);
+            lvUsers.Items.SortDescriptions.Add(new SortDescription(sortBy, newDir));
+        }
+
+        private void RemoveItemCommand(Plane planeToDelete)
+        {
+            int delpos = 0;
+            foreach (Plane plane in PlaneTree.Items)
+            {
+                if (plane.Equals(planeToDelete))
+                {
+                    break;
+                }
+                delpos++;
+            }
+
+            MessageBox.Show(delpos.ToString());
+            PlaneTree.Items.Remove(planeToDelete);
+        }
     }
+
+    
 }

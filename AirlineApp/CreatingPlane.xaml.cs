@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows;
 using Airline;
+using Planes;
 using static System.Convert;
 namespace AirlineApp;
 
