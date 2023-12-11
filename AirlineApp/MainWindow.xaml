@@ -91,7 +91,15 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
+        <ContextMenu x:Key="AllPlanesCM">
+            <MenuItem Header="Remove"
+                      Click="Remove"/>
+            <MenuItem Header="Transfer"
+                      Click="TransferFrom"/>
+        </ContextMenu>
+        <ContextMenu x:Key="CurPlanesCM">
+            <MenuItem>Transfer</MenuItem>
+        </ContextMenu>
 
     </Window.Resources>
     <Grid x:Name="MainGrid" Background="#e8fafb">
@@ -117,10 +125,13 @@
             <GroupBox.Header>
                 <TextBlock FontSize="20">All planes</TextBlock>
             </GroupBox.Header>
-            <StackPanel x:Name="AllPlanes" Orientation="Horizontal">
-                <GroupBox>
-                    <ListView ItemsSource="{Binding Path=(local:MainWindow.Passenger)}" x:Name="PassengerPlanes">
-
+            <Grid x:Name="AllPlanes">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <GroupBox Header="Passenger">
+                    <ListView ItemsSource="{Binding Path=(local:MainWindow.Passenger)}" x:Name="PassengerPlanes" ContextMenu="{StaticResource AllPlanesCM}">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">
@@ -137,8 +148,8 @@
                         </ListView.View>
                     </ListView>
                 </GroupBox>
-                <GroupBox Grid.Column="1">
-                    <ListView ItemsSource="{Binding Path=(local:MainWindow.Cargo)}" x:Name="CargoPlanes">
+                <GroupBox Grid.Column="1" Header="Cargo">
+                    <ListView ItemsSource="{Binding Path=(local:MainWindow.Cargo)}" x:Name="CargoPlanes" ContextMenu="{StaticResource AllPlanesCM}">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">
@@ -155,7 +166,7 @@
                         </ListView.View>
                     </ListView>
                 </GroupBox>
-            </StackPanel>
+            </Grid>
         </GroupBox>
 
 

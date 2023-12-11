@@ -1,14 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <planes>
-  <plane type="P">
-    <name>Plna 1</name>
-    <capacity>5</capacity>
-    <loadCapacity>45</loadCapacity>
-    <crew>21</crew>
-    <fuelRate>54</fuelRate>
-    <flightRange>355</flightRange>
-    <amountOfPassengers>135</amountOfPassengers>
-  </plane>
   <plane type="C">
     <name>Pnae</name>
     <capacity>215</capacity>

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Xml;
@@ -92,12 +93,20 @@ public partial class MainWindow : Window
 
     private void Exit(object sender, RoutedEventArgs e)
     {
-        var sd = new SavingData();
-        if (sd.ShowDialog() == true)
+        MessageBoxResult mbr = MessageBox.Show("Save Data?", "Exit", MessageBoxButton.YesNoCancel);
+        switch (mbr)
         {
-            if (sd.IsForSave)
+            case MessageBoxResult.Yes:
+            {
                 SavingXml(null, null);
-            Close();
+                Close();
+                break;
+            }
+            case MessageBoxResult.No:
+                Close();
+                break;
+            case MessageBoxResult.Cancel:
+                break;
         }
     }
 
@@ -182,6 +191,57 @@ public partial class MainWindow : Window
          PlaneTree.Items.Remove(planeToDelete);
      }
      */
+    private void Remove(object sender, RoutedEventArgs e)
+    {
+        bool pas = PassengerPlanes.IsMouseOver;
+        var menuItem = (MenuItem)sender;
+        var contextMenu = (ContextMenu)menuItem.Parent;
+        var target = (ListView)contextMenu.PlacementTarget;
+        MessageBoxResult mbr = MessageBox.Show("You sure?", "Delete plane", MessageBoxButton.YesNo);
+        switch (mbr)
+        {
+            case MessageBoxResult.Yes:
+            {
+                Plane plane;
+                if (target.Equals(PassengerPlanes)) 
+                {
+                    plane = PassengerPlanes.SelectedItem as Plane;
+                    Passenger.Remove(plane);
+                }
+                else
+                {
+                    plane = CargoPlanes.SelectedItem as Plane;
+                    Cargo.Remove(plane);
+                }
+
+                Planes.Remove(plane);
+                break;
+            }
+            case MessageBoxResult.No:
+                break;
+        }
+    }
+
+    private void TransferFrom(object sender, RoutedEventArgs e)
+    {
+        var menuItem = (MenuItem)sender;
+        var contextMenu = (ContextMenu)menuItem.Parent;
+        var target = (ListView)contextMenu.PlacementTarget;
+        Plane plane;
+        if (target.Equals(PassengerPlanes)) 
+        {
+            plane = PassengerPlanes.SelectedItem as Plane;
+            Passenger.Remove(plane);
+            CurPasPlanes.Items.Add(plane);
+        }
+        else
+        {
+            plane = CargoPlanes.SelectedItem as Plane;
+            Cargo.Remove(plane);
+            CurCargoPlanes.Items.Add(plane);
+        }
+
+    }
 }
 
 /*
