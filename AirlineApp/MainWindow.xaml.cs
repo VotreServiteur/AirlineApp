@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Xml;
@@ -37,8 +38,25 @@ public partial class MainWindow : Window
         InitializeComponent();
         ReadXml();
         DataContext = true;
+        CollectionView passengerView = (CollectionView)CollectionViewSource.GetDefaultView(PassengerPlanes.ItemsSource);
+        CollectionView cargoView = (CollectionView)CollectionViewSource.GetDefaultView(CargoPlanes.ItemsSource);
+        passengerView.Filter = NameFilter;
+        cargoView.Filter = NameFilter;
     }
 
+    private bool NameFilter(object item)
+    {
+        if(String.IsNullOrEmpty(nameFilter.Text))
+            return true;
+        else
+            return ((item as Plane).Name.IndexOf(nameFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0);
+    }
+    private void nameFilter_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+    {
+        CollectionViewSource.GetDefaultView(CargoPlanes.ItemsSource).Refresh();
+        CollectionViewSource.GetDefaultView(PassengerPlanes.ItemsSource).Refresh();
+        
+    }
     public void ReadXml()
     {
         Environment.CurrentDirectory =
@@ -64,6 +82,7 @@ public partial class MainWindow : Window
 
                 Planes.Add(plane);
             }
+        
     }
 
     public void SavingXml(object sender, RoutedEventArgs e)
@@ -239,6 +258,26 @@ public partial class MainWindow : Window
             plane = CargoPlanes.SelectedItem as Plane;
             Cargo.Remove(plane);
             CurCargoPlanes.Items.Add(plane);
+        }
+
+    }
+    private void TransferBack(object sender, RoutedEventArgs e)
+    {
+        var menuItem = (MenuItem)sender;
+        var contextMenu = (ContextMenu)menuItem.Parent;
+        var target = (ListView)contextMenu.PlacementTarget;
+        Plane plane;
+        if (target.Equals(CurPasPlanes)) 
+        {
+            plane = CurPasPlanes.SelectedItem as Plane;
+            CurPasPlanes.Items.Remove(plane);
+            Passenger.Add(plane);
+        }
+        else
+        {
+            plane = CurCargoPlanes.SelectedItem as Plane;
+            CurCargoPlanes.Items.Remove(plane);
+            Cargo.Add(plane);
         }
 
     }

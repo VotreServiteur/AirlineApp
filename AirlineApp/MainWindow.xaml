@@ -98,7 +98,8 @@
                       Click="TransferFrom"/>
         </ContextMenu>
         <ContextMenu x:Key="CurPlanesCM">
-            <MenuItem>Transfer</MenuItem>
+            <MenuItem Header="Transfer"
+                      Click="TransferBack"/>
         </ContextMenu>
 
     </Window.Resources>
@@ -126,11 +127,27 @@
                 <TextBlock FontSize="20">All planes</TextBlock>
             </GroupBox.Header>
             <Grid x:Name="AllPlanes">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.04*"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <GroupBox Header="Passenger">
+                <Grid Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox>
+                        <ComboBoxItem Name="ComboName" IsSelected="True">Filter by name</ComboBoxItem>
+                    </ComboBox>
+                    <TextBox Grid.Column="1" Grid.ColumnSpan="3" Margin="10 0 0 0 " Name="nameFilter" TextChanged="nameFilter_TextChanged"/>
+                </Grid>
+                <GroupBox Grid.Row="1" Grid.Column="0" Header="Passenger">
                     <ListView ItemsSource="{Binding Path=(local:MainWindow.Passenger)}" x:Name="PassengerPlanes" ContextMenu="{StaticResource AllPlanesCM}">
                         <ListView.View>
                             <GridView>
@@ -148,7 +165,7 @@
                         </ListView.View>
                     </ListView>
                 </GroupBox>
-                <GroupBox Grid.Column="1" Header="Cargo">
+                <GroupBox Grid.Column="1" Grid.Row="1" Header="Cargo">
                     <ListView ItemsSource="{Binding Path=(local:MainWindow.Cargo)}" x:Name="CargoPlanes" ContextMenu="{StaticResource AllPlanesCM}">
                         <ListView.View>
                             <GridView>
@@ -178,7 +195,8 @@
                 <TextBlock>Passenger</TextBlock>
                 <ListView MinHeight="100" Name="CurPasPlanes"
                           dd:DragDrop.IsDragSource="True"
-                          dd:DragDrop.IsDropTarget="True">
+                          dd:DragDrop.IsDropTarget="True"
+                          ContextMenu="{StaticResource CurPlanesCM}">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">
@@ -225,7 +243,8 @@
                 <TextBlock>Cargo</TextBlock>
                 <ListView MinHeight="100" Name="CurCargoPlanes"
                           dd:DragDrop.IsDragSource="True"
-                          dd:DragDrop.IsDropTarget="True">
+                          dd:DragDrop.IsDropTarget="True"
+                          ContextMenu="{StaticResource CurPlanesCM}">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">
