@@ -11,7 +11,7 @@ public class SortAdorner : Adorner
     private static readonly Geometry descGeometry =
         Geometry.Parse("M 0 0 L 3.5 4 L 7 0 Z");
 
-    public SortAdorner(UIElement element, ListSortDirection dir)
+    public SortAdorner(UIElement? element, ListSortDirection dir)
         : base(element)
     {
         Direction = dir;

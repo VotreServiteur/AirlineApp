@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,37 +27,144 @@ public partial class MainWindow : Window
     public static ObservableCollection<Plane> Passenger => passenger;
     public static ObservableCollection<Plane> Cargo => cargo;
 
+    
 
-    private GridViewColumnHeader listViewSortCol;
-    private SortAdorner listViewSortAdorner;
+    CollectionView passengerView;
+    CollectionView cargoView;
+
+
+    private GridViewColumnHeader? listViewSortCol;
+    private SortAdorner? listViewSortAdorner;
 
     public static bool IsPassenger { get; set; }
-
+    private FromToModel _ftm;
 
     public MainWindow()
     {
         InitializeComponent();
         ReadXml();
-        DataContext = true;
-        CollectionView passengerView = (CollectionView)CollectionViewSource.GetDefaultView(PassengerPlanes.ItemsSource);
-        CollectionView cargoView = (CollectionView)CollectionViewSource.GetDefaultView(CargoPlanes.ItemsSource);
+        _ftm = new FromToModel();
+        DataContext = _ftm;
+        passengerView = (CollectionView)CollectionViewSource.GetDefaultView(PassengerPlanes.ItemsSource);
+        cargoView = (CollectionView)CollectionViewSource.GetDefaultView(CargoPlanes.ItemsSource);
+        passengerView.Filter = NameFilter;
+        cargoView.Filter = NameFilter;
+        ComboName.IsSelected = true;
+    }
+
+    private void ComboFuel_OnSelected(object sender, RoutedEventArgs e)
+    {
+        nameFilter.Visibility = Visibility.Hidden;
+        nameFilter.Text = null;
+        if (fromFilter.Visibility == Visibility.Hidden)
+            FromToSwitch();
+        fromFilter.Text = null;
+        toFilter.Text = null;
+        passengerView.Filter = FuelFilter;
+        cargoView.Filter = FuelFilter;
+    }
+
+    private bool FuelFilter(object obj)
+    {
+        if (fromFilter.Text.Equals("") && toFilter.Text.Equals("") || (Validation.GetHasError(fromFilter) && Validation.GetHasError(toFilter)))
+            return true;
+        if (fromFilter.Text.Equals(""))
+            return ((obj as Plane)!.FuelRate <= Convert.ToInt32(toFilter.Text));
+        if (toFilter.Text.Equals(""))
+            return ((obj as Plane)!.FuelRate >= Convert.ToInt32(fromFilter.Text));
+        return ((obj as Plane)!.FuelRate >= Convert.ToInt32(fromFilter.Text)) &&
+               ((obj as Plane)!.FuelRate <= Convert.ToInt32(toFilter.Text));
+    }
+
+    private bool RangeFilter(object obj)
+    {
+        if (fromFilter.Text.Equals("") && toFilter.Text.Equals(""))
+            return true;
+        if (fromFilter.Text.Equals(""))
+            return ((obj as Plane)!.FlightRange <= Convert.ToInt32(toFilter.Text));
+        if (toFilter.Text.Equals(""))
+            return ((obj as Plane)!.FlightRange >= Convert.ToInt32(fromFilter.Text));
+        return ((obj as Plane)!.FlightRange >= Convert.ToInt32(fromFilter.Text)) &&
+               ((obj as Plane)!.FlightRange <= Convert.ToInt32(toFilter.Text));
+    }
+
+    private void FromToSwitch()
+    {
+        if (fromFilter.Visibility == Visibility.Visible)
+        {
+            fromFilter.Visibility = Visibility.Hidden;
+            toFilter.Visibility = Visibility.Hidden;
+            fromFilterBlock.Visibility = Visibility.Hidden;
+            toFilterBlock.Visibility = Visibility.Hidden;
+        }
+        else
+        {
+            fromFilter.Visibility = Visibility.Visible;
+            toFilter.Visibility = Visibility.Visible;
+            fromFilterBlock.Visibility = Visibility.Visible;
+            toFilterBlock.Visibility = Visibility.Visible;
+        }
+    }
+
+    private void ComboRange_OnSelected(object sender, RoutedEventArgs e)
+    {
+        nameFilter.Visibility = Visibility.Hidden;
+        nameFilter.Text = null;
+        if (fromFilter.Visibility == Visibility.Hidden)
+            FromToSwitch();
+        fromFilter.Text = null;
+        toFilter.Text = null;
+        passengerView.Filter = RangeFilter;
+        cargoView.Filter = RangeFilter;
+    }
+
+    private void ComboName_OnSelected(object sender, RoutedEventArgs e)
+    {
+        nameFilter.Visibility = Visibility.Visible;
+        nameFilter.Text = null;
+        if (fromFilter.Visibility == Visibility.Visible)
+            FromToSwitch();
+        fromFilter.Text = null;
+        toFilter.Text = null;
         passengerView.Filter = NameFilter;
         cargoView.Filter = NameFilter;
     }
 
     private bool NameFilter(object item)
     {
-        if(String.IsNullOrEmpty(nameFilter.Text))
+        if (String.IsNullOrEmpty(nameFilter.Text))
             return true;
         else
-            return ((item as Plane).Name.IndexOf(nameFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0);
+            return ((item as Plane)!.Name.IndexOf(nameFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0);
     }
+
     private void nameFilter_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
     {
         CollectionViewSource.GetDefaultView(CargoPlanes.ItemsSource).Refresh();
         CollectionViewSource.GetDefaultView(PassengerPlanes.ItemsSource).Refresh();
-        
     }
+
+    private void toFilter_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+    {
+        uint result;
+        if (UInt32.TryParse(toFilter.Text, out result))
+        {
+            CollectionViewSource.GetDefaultView(CargoPlanes.ItemsSource).Refresh();
+            CollectionViewSource.GetDefaultView(PassengerPlanes.ItemsSource).Refresh();
+        }
+    }
+    private void fromFilter_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+    {
+        uint result;
+        if (UInt32.TryParse(fromFilter.Text, out result))
+        {
+            CollectionViewSource.GetDefaultView(CargoPlanes.ItemsSource).Refresh();
+            CollectionViewSource.GetDefaultView(PassengerPlanes.ItemsSource).Refresh();
+        }
+           
+    }
+
+    
     public void ReadXml()
     {
         Environment.CurrentDirectory =
@@ -72,7 +180,6 @@ public partial class MainWindow : Window
                 {
                     plane = new PassengerPlane(xNode);
                     Passenger.Add(plane);
-                    //CurPasPlanes.Items.Add(plane);
                 }
                 else
                 {
@@ -82,7 +189,6 @@ public partial class MainWindow : Window
 
                 Planes.Add(plane);
             }
-        
     }
 
     public void SavingXml(object sender, RoutedEventArgs e)
@@ -129,49 +235,18 @@ public partial class MainWindow : Window
         }
     }
 
-    private void Plane_OnDragEnter(object sender, DragEventArgs e)
-    {
-        throw new NotImplementedException();
-    }
 
-    private void Plane_OnMouseMove(object sender, MouseEventArgs e)
-    {
-        var plane = sender as Plane;
-        if (plane != null && e.LeftButton == MouseButtonState.Pressed)
-            DragDrop.DoDragDrop((DependencyObject)e.Source,
-                plane,
-                DragDropEffects.Copy);
-    }
+    private void СurPassengerPlanesColumnHeader_Click(object sender, RoutedEventArgs e)
+        => PlanesColumnHeader_Click(sender, e, CurPasPlanes);
 
-    private void Plane_OnGiveFeedback(object sender, GiveFeedbackEventArgs e)
-    {
-        throw new NotImplementedException();
-    }
-
-    private void Plane_OnDragLeave(object sender, DragEventArgs e)
-    {
-        throw new NotImplementedException();
-    }
-
-    private void Plane_OnDragOver(object sender, DragEventArgs e)
-    {
-        throw new NotImplementedException();
-    }
-
-    private void Plane_OnDrop(object sender, DragEventArgs e)
-    {
-        throw new NotImplementedException();
-    }
+    private void CurCargoPlanesColumnHeader_Click(object sender, RoutedEventArgs e)
+        => PlanesColumnHeader_Click(sender, e, CurCargoPlanes);
 
     private void PassengerPlanesColumnHeader_Click(object sender, RoutedEventArgs e)
-    {
-        PlanesColumnHeader_Click(sender, e, CurPasPlanes);
-    }
+        => PlanesColumnHeader_Click(sender, e, PassengerPlanes);
 
     private void CargoPlanesColumnHeader_Click(object sender, RoutedEventArgs e)
-    {
-        PlanesColumnHeader_Click(sender, e, CurCargoPlanes);
-    }
+        => PlanesColumnHeader_Click(sender, e, CargoPlanes);
 
     private void PlanesColumnHeader_Click(object sender, RoutedEventArgs e, ListView lvUsers)
     {
@@ -190,26 +265,10 @@ public partial class MainWindow : Window
 
         listViewSortCol = column;
         listViewSortAdorner = new SortAdorner(listViewSortCol, newDir);
-        AdornerLayer.GetAdornerLayer(listViewSortCol).Add(listViewSortAdorner);
+        AdornerLayer.GetAdornerLayer(listViewSortCol)?.Add(listViewSortAdorner);
         lvUsers.Items.SortDescriptions.Add(new SortDescription(sortBy, newDir));
     }
 
-    /* private void RemoveItemCommand(Plane planeToDelete)
-     {
-         int delpos = 0;
-         foreach (Plane plane in PlaneTree.Items)
-         {
-             if (plane.Equals(planeToDelete))
-             {
-                 break;
-             }
-             delpos++;
-         }
-
-         MessageBox.Show(delpos.ToString());
-         PlaneTree.Items.Remove(planeToDelete);
-     }
-     */
     private void Remove(object sender, RoutedEventArgs e)
     {
         bool pas = PassengerPlanes.IsMouseOver;
@@ -222,7 +281,7 @@ public partial class MainWindow : Window
             case MessageBoxResult.Yes:
             {
                 Plane plane;
-                if (target.Equals(PassengerPlanes)) 
+                if (target.Equals(PassengerPlanes))
                 {
                     plane = PassengerPlanes.SelectedItem as Plane;
                     Passenger.Remove(plane);
@@ -247,7 +306,7 @@ public partial class MainWindow : Window
         var contextMenu = (ContextMenu)menuItem.Parent;
         var target = (ListView)contextMenu.PlacementTarget;
         Plane plane;
-        if (target.Equals(PassengerPlanes)) 
+        if (target.Equals(PassengerPlanes))
         {
             plane = PassengerPlanes.SelectedItem as Plane;
             Passenger.Remove(plane);
@@ -259,15 +318,15 @@ public partial class MainWindow : Window
             Cargo.Remove(plane);
             CurCargoPlanes.Items.Add(plane);
         }
-
     }
+
     private void TransferBack(object sender, RoutedEventArgs e)
     {
         var menuItem = (MenuItem)sender;
         var contextMenu = (ContextMenu)menuItem.Parent;
         var target = (ListView)contextMenu.PlacementTarget;
         Plane plane;
-        if (target.Equals(CurPasPlanes)) 
+        if (target.Equals(CurPasPlanes))
         {
             plane = CurPasPlanes.SelectedItem as Plane;
             CurPasPlanes.Items.Remove(plane);
@@ -279,8 +338,8 @@ public partial class MainWindow : Window
             CurCargoPlanes.Items.Remove(plane);
             Cargo.Add(plane);
         }
-
     }
+
 }
 
 /*

@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿
+using System.Xml;
 using System.Xml.Linq;
 
 namespace Planes;
@@ -68,6 +69,7 @@ public abstract class Plane
     public int FuelRate { get; set; }
     public int FlightRange { get; set; }
 
+
     public virtual XElement CreateXmlNode()
     {
         XElement plane = new("plane");
@@ -91,4 +93,5 @@ public abstract class Plane
         return
             $" Plane: {Name}\n\tCapacity: {Capacity}\n\tLoadCapacity: {LoadCapacity}\n\tNumber of crew: {Crew}\n\tFuel rate:{FuelRate}\n\tFlight range:{FlightRange}\n\t";
     }
+
 }

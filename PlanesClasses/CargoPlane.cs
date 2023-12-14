@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿
+using System.Xml;
 using System.Xml.Linq;
 using Planes;
 
@@ -20,6 +21,7 @@ public class CargoPlane : Plane
     }
 
     public CargoPlane()
+        : base()
     {
         InputMessage("load price");
         LoadPrice = Convert.ToInt32(Console.ReadLine());
@@ -40,4 +42,6 @@ public class CargoPlane : Plane
     {
         return base.ToString() + $"Load price: {LoadPrice}\n";
     }
+
+
 }

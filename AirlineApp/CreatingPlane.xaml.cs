@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Windows.Data;
 using Airline;
 using Planes;
 using static System.Convert;
@@ -7,13 +9,18 @@ namespace AirlineApp;
 
 public partial class CreatingPlane : Window
 {
+    
+    private PlaneModel? _planeModel;
     public CreatingPlane(bool isPassenger)
     {
         InitializeComponent();
-
         IsPassenger = isPassenger;
-        DataContext = this;
+        _planeModel = new PlaneModel();
+        _planeModel.IsPassenger = isPassenger;
+        DataContext = _planeModel;
+        Console.Write(PriceBox.BorderBrush);
     }
+
 
     public bool IsPassenger { get; set; }
 

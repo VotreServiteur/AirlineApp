@@ -36,4 +36,22 @@
     <flightRange>2000</flightRange>
     <amountOfPassengers>200</amountOfPassengers>
   </plane>
+  <plane type="P">
+    <name>Plane</name>
+    <capacity>200</capacity>
+    <loadCapacity>35</loadCapacity>
+    <crew>4</crew>
+    <fuelRate>200</fuelRate>
+    <flightRange>500</flightRange>
+    <amountOfPassengers>20</amountOfPassengers>
+  </plane>
+  <plane type="C">
+    <name>Cargo1</name>
+    <capacity>200</capacity>
+    <loadCapacity>30</loadCapacity>
+    <crew>3</crew>
+    <fuelRate>300</fuelRate>
+    <flightRange>500</flightRange>
+    <LoadPrice>25000</LoadPrice>
+  </plane>
 </planes>

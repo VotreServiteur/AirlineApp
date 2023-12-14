@@ -9,6 +9,15 @@
         Title="MainWindow" MaxWidth="1280" MaxHeight="720" MinWidth="800" MinHeight="600" Height="720" Width="1280"
         d:DataContext="{d:DesignInstance local:MainWindow}">
     <Window.Resources>
+
+        <ControlTemplate x:Key="validationFailed">
+            <StackPanel Orientation="Horizontal">
+                <Border BorderBrush="Violet" BorderThickness="2">
+                    <AdornedElementPlaceholder />
+                </Border>
+                <TextBlock Foreground="Red" FontSize="26" FontWeight="Bold">!</TextBlock>
+            </StackPanel>
+        </ControlTemplate>
         <Style x:Key="Buttons">
             <Setter Property="Control.MaxWidth" Value="300" />
             <Setter Property="Control.MaxHeight" Value="40" />
@@ -37,7 +46,6 @@
                                                   SnapsToDevicePixels="True" VerticalAlignment="Center" />
                             </Grid>
                         </Border>
-
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -93,13 +101,13 @@
         </Style>
         <ContextMenu x:Key="AllPlanesCM">
             <MenuItem Header="Remove"
-                      Click="Remove"/>
+                      Click="Remove" />
             <MenuItem Header="Transfer"
-                      Click="TransferFrom"/>
+                      Click="TransferFrom" />
         </ContextMenu>
         <ContextMenu x:Key="CurPlanesCM">
             <MenuItem Header="Transfer"
-                      Click="TransferBack"/>
+                      Click="TransferBack" />
         </ContextMenu>
 
     </Window.Resources>
@@ -120,35 +128,68 @@
             <ColumnDefinition Width="0.6*" />
             <ColumnDefinition Width="10" />
         </Grid.ColumnDefinitions>
-
-
         <GroupBox Grid.Row="1" Grid.RowSpan="3" Grid.Column="1">
             <GroupBox.Header>
                 <TextBlock FontSize="20">All planes</TextBlock>
             </GroupBox.Header>
             <Grid x:Name="AllPlanes">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="0.04*"/>
-                    <RowDefinition/>
+                    <RowDefinition Height="0.05*" />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Grid Grid.ColumnSpan="2">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="0.8*" />
+                        <ColumnDefinition Width="0.3*" />
+                        <ColumnDefinition Width="0.57*" />
+                        <ColumnDefinition Width="0" />
+                        <ColumnDefinition Width="0.3*" />
+                        <ColumnDefinition Width="0.6*" />
                     </Grid.ColumnDefinitions>
                     <ComboBox>
-                        <ComboBoxItem Name="ComboName" IsSelected="True">Filter by name</ComboBoxItem>
+                        <ComboBoxItem Name="ComboName" Selected="ComboName_OnSelected">Filter by name</ComboBoxItem>
+                        <ComboBoxItem Name="ComboFuel" Selected="ComboFuel_OnSelected">Filter by fuel</ComboBoxItem>
+                        <ComboBoxItem Name="ComboRange" Selected="ComboRange_OnSelected">Filter by range</ComboBoxItem>
+
                     </ComboBox>
-                    <TextBox Grid.Column="1" Grid.ColumnSpan="3" Margin="10 0 0 0 " Name="nameFilter" TextChanged="nameFilter_TextChanged"/>
+                    <TextBox Grid.Column="1" Grid.ColumnSpan="5" Margin="10 0 0 0 " Name="nameFilter"
+                             TextChanged="nameFilter_TextChanged" />
+                    <TextBlock Visibility="Hidden" Grid.Column="1" TextAlignment="Right"
+                               Name="fromFilterBlock">
+                        From:
+                    </TextBlock>
+                    <TextBlock Visibility="Hidden" Grid.Column="4" Margin="0 0 0 0" TextAlignment="Right"
+                               Name="toFilterBlock">
+                        To:
+                    </TextBlock>
+                    <TextBox Grid.Column="2" Visibility="Hidden" Margin="10 0 0 0 " Name="fromFilter"
+                             TextChanged="fromFilter_TextChanged">
+                        <TextBox.Text>
+                            <Binding Path="From">
+                                    <Binding.ValidationRules>
+                                        <DataErrorValidationRule/>
+                                    </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                    <TextBox Grid.Column="5" Visibility="Hidden" Margin=" 10 0 10 0 " Grid.ColumnSpan="2"
+                             Name="toFilter" TextChanged="toFilter_TextChanged">
+                        <TextBox.Text>
+                            <Binding Path="To">
+                                <Binding.ValidationRules>
+                                    <DataErrorValidationRule/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </Grid>
                 <GroupBox Grid.Row="1" Grid.Column="0" Header="Passenger">
-                    <ListView ItemsSource="{Binding Path=(local:MainWindow.Passenger)}" x:Name="PassengerPlanes" ContextMenu="{StaticResource AllPlanesCM}">
+                    <ListView ItemsSource="{Binding Path=(local:MainWindow.Passenger)}" x:Name="PassengerPlanes"
+                              ContextMenu="{StaticResource AllPlanesCM}">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">
@@ -159,6 +200,14 @@
                                 <GridViewColumn DisplayMemberBinding="{Binding Path=FuelRate}">
                                     <GridViewColumn.Header>
                                         <GridViewColumnHeader Tag="FuelRate" Click="PassengerPlanesColumnHeader_Click">Fuel rate</GridViewColumnHeader>
+                                    </GridViewColumn.Header>
+                                </GridViewColumn>
+                                <GridViewColumn DisplayMemberBinding="{Binding Path=FlightRange}">
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader Tag="FlightRange"
+                                                              Click="PassengerPlanesColumnHeader_Click">
+                                            Flight range
+                                        </GridViewColumnHeader>
                                     </GridViewColumn.Header>
                                 </GridViewColumn>
                             </GridView>
@@ -166,17 +215,23 @@
                     </ListView>
                 </GroupBox>
                 <GroupBox Grid.Column="1" Grid.Row="1" Header="Cargo">
-                    <ListView ItemsSource="{Binding Path=(local:MainWindow.Cargo)}" x:Name="CargoPlanes" ContextMenu="{StaticResource AllPlanesCM}">
+                    <ListView ItemsSource="{Binding Path=(local:MainWindow.Cargo)}" x:Name="CargoPlanes"
+                              ContextMenu="{StaticResource AllPlanesCM}">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">
                                     <GridViewColumn.Header>
-                                        <GridViewColumnHeader Tag="Name" Click="PassengerPlanesColumnHeader_Click">Name</GridViewColumnHeader>
+                                        <GridViewColumnHeader Tag="Name" Click="CargoPlanesColumnHeader_Click">Name</GridViewColumnHeader>
                                     </GridViewColumn.Header>
                                 </GridViewColumn>
                                 <GridViewColumn DisplayMemberBinding="{Binding Path=FuelRate}">
                                     <GridViewColumn.Header>
-                                        <GridViewColumnHeader Tag="FuelRate" Click="PassengerPlanesColumnHeader_Click">Fuel rate</GridViewColumnHeader>
+                                        <GridViewColumnHeader Tag="FuelRate" Click="CargoPlanesColumnHeader_Click">Fuel rate</GridViewColumnHeader>
+                                    </GridViewColumn.Header>
+                                </GridViewColumn>
+                                <GridViewColumn DisplayMemberBinding="{Binding Path=FlightRange}">
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader Tag="FlightRange" Click="CargoPlanesColumnHeader_Click">Flight range</GridViewColumnHeader>
                                     </GridViewColumn.Header>
                                 </GridViewColumn>
                             </GridView>
@@ -185,8 +240,6 @@
                 </GroupBox>
             </Grid>
         </GroupBox>
-
-
         <GroupBox Grid.Row="1" Grid.RowSpan="3" Grid.Column="3">
             <GroupBox.Header>
                 <TextBlock FontSize="20">Current race</TextBlock>
@@ -201,38 +254,44 @@
                         <GridView>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">
                                 <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="Name" Click="PassengerPlanesColumnHeader_Click">Name</GridViewColumnHeader>
+                                    <GridViewColumnHeader Tag="Name" Click="СurPassengerPlanesColumnHeader_Click">Name</GridViewColumnHeader>
                                 </GridViewColumn.Header>
                             </GridViewColumn>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=Capacity}">
                                 <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="Capacity" Click="PassengerPlanesColumnHeader_Click"> Capacity</GridViewColumnHeader>
+                                    <GridViewColumnHeader Tag="Capacity" Click="СurPassengerPlanesColumnHeader_Click"> Capacity</GridViewColumnHeader>
                                 </GridViewColumn.Header>
                             </GridViewColumn>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=LoadCapacity}">
                                 <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="LoadCapacity" Click="PassengerPlanesColumnHeader_Click">Load Capacity</GridViewColumnHeader>
+                                    <GridViewColumnHeader Tag="LoadCapacity"
+                                                          Click="СurPassengerPlanesColumnHeader_Click">
+                                        Load Capacity
+                                    </GridViewColumnHeader>
                                 </GridViewColumn.Header>
                             </GridViewColumn>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=Crew}">
                                 <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="Crew" Click="PassengerPlanesColumnHeader_Click">Crew</GridViewColumnHeader>
+                                    <GridViewColumnHeader Tag="Crew" Click="СurPassengerPlanesColumnHeader_Click">Crew</GridViewColumnHeader>
                                 </GridViewColumn.Header>
                             </GridViewColumn>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=FuelRate}">
                                 <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="FuelRate" Click="PassengerPlanesColumnHeader_Click">Fuel Rate</GridViewColumnHeader>
+                                    <GridViewColumnHeader Tag="FuelRate" Click="СurPassengerPlanesColumnHeader_Click">Fuel Rate</GridViewColumnHeader>
                                 </GridViewColumn.Header>
                             </GridViewColumn>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=FlightRange}">
                                 <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="FlightRange" Click="PassengerPlanesColumnHeader_Click">Flight Range</GridViewColumnHeader>
+                                    <GridViewColumnHeader Tag="FlightRange"
+                                                          Click="СurPassengerPlanesColumnHeader_Click">
+                                        Flight Range
+                                    </GridViewColumnHeader>
                                 </GridViewColumn.Header>
                             </GridViewColumn>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=AmountOfPassengers}">
                                 <GridViewColumn.Header>
                                     <GridViewColumnHeader Tag="AmountOfPassenger"
-                                                          Click="PassengerPlanesColumnHeader_Click">
+                                                          Click="СurPassengerPlanesColumnHeader_Click">
                                         Amount of passenger
                                     </GridViewColumnHeader>
                                 </GridViewColumn.Header>
@@ -249,37 +308,43 @@
                         <GridView>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">
                                 <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="Name" Click="CargoPlanesColumnHeader_Click">Name</GridViewColumnHeader>
+                                    <GridViewColumnHeader Tag="Name" Click="CurCargoPlanesColumnHeader_Click">Name</GridViewColumnHeader>
                                 </GridViewColumn.Header>
                             </GridViewColumn>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=Capacity}">
                                 <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="Capacity" Click="PassengerPlanesColumnHeader_Click">Capacity</GridViewColumnHeader>
+                                    <GridViewColumnHeader Tag="Capacity" Click="СurPassengerPlanesColumnHeader_Click">Capacity</GridViewColumnHeader>
                                 </GridViewColumn.Header>
                             </GridViewColumn>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=LoadCapacity}">
                                 <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="LoadCapacity" Click="PassengerPlanesColumnHeader_Click">Load Capacity</GridViewColumnHeader>
+                                    <GridViewColumnHeader Tag="LoadCapacity"
+                                                          Click="СurPassengerPlanesColumnHeader_Click">
+                                        Load Capacity
+                                    </GridViewColumnHeader>
                                 </GridViewColumn.Header>
                             </GridViewColumn>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=Crew}">
                                 <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="Crew" Click="PassengerPlanesColumnHeader_Click">Crew</GridViewColumnHeader>
+                                    <GridViewColumnHeader Tag="Crew" Click="СurPassengerPlanesColumnHeader_Click">Crew</GridViewColumnHeader>
                                 </GridViewColumn.Header>
                             </GridViewColumn>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=FuelRate}">
                                 <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="FuelRate" Click="PassengerPlanesColumnHeader_Click">Fuel Rate</GridViewColumnHeader>
+                                    <GridViewColumnHeader Tag="FuelRate" Click="СurPassengerPlanesColumnHeader_Click">Fuel Rate</GridViewColumnHeader>
                                 </GridViewColumn.Header>
                             </GridViewColumn>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=FlightRange}">
                                 <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="FlightRange" Click="PassengerPlanesColumnHeader_Click">Flight Range</GridViewColumnHeader>
+                                    <GridViewColumnHeader Tag="FlightRange"
+                                                          Click="СurPassengerPlanesColumnHeader_Click">
+                                        Flight Range
+                                    </GridViewColumnHeader>
                                 </GridViewColumn.Header>
                             </GridViewColumn>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=LoadPrice}">
                                 <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="LoadPrice" Click="PassengerPlanesColumnHeader_Click">Load price</GridViewColumnHeader>
+                                    <GridViewColumnHeader Tag="LoadPrice" Click="СurPassengerPlanesColumnHeader_Click">Load price</GridViewColumnHeader>
                                 </GridViewColumn.Header>
                             </GridViewColumn>
                         </GridView>
@@ -287,8 +352,6 @@
                 </ListView>
             </StackPanel>
         </GroupBox>
-
-
         <Grid Grid.Column="5" Grid.Row="1" RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.1*" />
@@ -340,7 +403,6 @@
                         </TextBlock.Style>
                     </TextBlock>
                 </Grid>
-
             </GroupBox>
         </Grid>
         <StackPanel Grid.Row="3" Grid.Column="5">
@@ -372,7 +434,6 @@
                     </Grid>
                 </Grid>
             </Expander>
-            <Button x:Name="TempName" Style="{StaticResource Buttons}" />
             <Button Style="{StaticResource Buttons}" Content="Save data" Click="SavingXml" />
             <Button Style="{StaticResource Buttons}" Content="Exit" Click="Exit" />
         </StackPanel>

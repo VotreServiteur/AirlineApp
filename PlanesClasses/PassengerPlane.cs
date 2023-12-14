@@ -6,6 +6,7 @@ namespace Airline;
 
 public class PassengerPlane : Plane
 {
+    public int AmountOfPassengers { get; set; }
     public PassengerPlane(XmlElement xNode) : base(xNode)
     {
         AmountOfPassengers = Convert.ToInt32(xNode.LastChild?.InnerText);
@@ -19,12 +20,13 @@ public class PassengerPlane : Plane
     }
 
     public PassengerPlane()
+        : base()
     {
         InputMessage("amount of passengers");
         AmountOfPassengers = Convert.ToInt32(Console.ReadLine());
     }
 
-    public int AmountOfPassengers { get; set; }
+    
 
     public override XElement CreateXmlNode()
     {
@@ -38,4 +40,6 @@ public class PassengerPlane : Plane
     {
         return base.ToString() + $"Amount if passengers: {AmountOfPassengers}\n";
     }
+
+   
 }
