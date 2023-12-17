@@ -54,4 +54,13 @@
     <flightRange>500</flightRange>
     <LoadPrice>25000</LoadPrice>
   </plane>
+  <plane type="C">
+    <name>Cargo Plane 2</name>
+    <capacity>134</capacity>
+    <loadCapacity>30</loadCapacity>
+    <crew>2</crew>
+    <fuelRate>299</fuelRate>
+    <flightRange>2000</flightRange>
+    <LoadPrice>3120</LoadPrice>
+  </plane>
 </planes>
